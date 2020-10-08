@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -76,7 +75,9 @@ func (obj *Engine) Reply(baseMsg *Message, replyMsg string) error {
 		return fmt.Errorf("send message to user error: %s", err)
 	}
 
-	log.Printf("info: tresp: %+v", resp)
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("return resp status code: %d", resp.StatusCode)
+	}
 
 	return nil
 }
