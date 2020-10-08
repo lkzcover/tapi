@@ -1,7 +1,11 @@
 package tapi
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
 	"strconv"
 
 	"github.com/lkzcover/tapi/handlers"
@@ -30,7 +34,7 @@ type Message struct {
 }
 
 type replyMsgStruct struct {
-	ChatID uint64 `json:"chat_id"`
+	ChatID int64  `json:"chat_id"`
 	Text   string `json:"text"`
 }
 
@@ -55,19 +59,53 @@ func (obj *Engine) GetUpdates() ([]Message, error) {
 	return messageList.Result, nil
 }
 
-func (obj *Message) Reply(replyMsg, proxyURL, tAPI, botKEY, secretKey string) error {
-	//
-	//sMsg := replyMsgStruct{
-	//	ChatID: obj.Message.Chat.ID,
-	//	Text:   replyMsg,
-	//}
+/*
 
-	//resp, err := gc.PostAesRequest(proxyURL, tAPI+botKEY+"/sendMessage", secretKey, "application/json", sMsg)
-	//if err != nil {
-	//	return fmt.Errorf("send message to user error: %s", err)
-	//}
 
-	//log.Println(string(resp))
+
+
+	resp, err := http.Post(urlReq, contentType, bytes.NewReader([]byte(base64.StdEncoding.EncodeToString(encryptedBody)))) // TODO оптимизировать
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("incorrect goproxy response status. Get: %d but Expecdet: 200", resp.StatusCode)
+	}
+
+	respBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	decryptResp, err := easyaes.DecryptAesCBCStaticIV([]byte(key), iv, respBody)
+	if err != nil {
+		return nil, err
+	}
+
+	return decryptResp, nil
+}
+
+*/
+
+func (obj *Engine) Reply(baseMsg *Message, replyMsg string) error {
+
+	sMsg := replyMsgStruct{
+		ChatID: baseMsg.Message.Chat.ID,
+		Text:   replyMsg,
+	}
+
+	body, err := json.Marshal(sMsg)
+	if err != nil {
+		return fmt.Errorf("marshal bodyReq error: %s", err)
+	}
+
+	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+"/sendMessage", "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		return fmt.Errorf("send message to user error: %s", err)
+	}
+
+	log.Printf("info: tresp: %+v", resp)
 
 	return nil
 }
