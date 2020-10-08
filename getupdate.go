@@ -67,7 +67,7 @@ func (obj *Engine) Reply(baseMsg *Message, replyMsg string) error {
 
 	body, err := json.Marshal(sMsg)
 	if err != nil {
-		return fmt.Errorf("marshal bodyReq error: %s", err)
+		return fmt.Errorf("marshal sMsg error: %s", err)
 	}
 
 	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+"/sendMessage", "application/json", bytes.NewBuffer(body))
