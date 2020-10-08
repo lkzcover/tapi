@@ -59,35 +59,6 @@ func (obj *Engine) GetUpdates() ([]Message, error) {
 	return messageList.Result, nil
 }
 
-/*
-
-
-
-
-	resp, err := http.Post(urlReq, contentType, bytes.NewReader([]byte(base64.StdEncoding.EncodeToString(encryptedBody)))) // TODO оптимизировать
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("incorrect goproxy response status. Get: %d but Expecdet: 200", resp.StatusCode)
-	}
-
-	respBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	decryptResp, err := easyaes.DecryptAesCBCStaticIV([]byte(key), iv, respBody)
-	if err != nil {
-		return nil, err
-	}
-
-	return decryptResp, nil
-}
-
-*/
-
 func (obj *Engine) Reply(baseMsg *Message, replyMsg string) error {
 
 	sMsg := replyMsgStruct{
