@@ -70,6 +70,7 @@ func (obj *Engine) Reply(baseMsg *Message, replyMsg string) error {
 		return fmt.Errorf("marshal sMsg error: %s", err)
 	}
 
+	// TODO допилить handlers
 	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+"/sendMessage", "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		return fmt.Errorf("send message to user error: %s", err)
