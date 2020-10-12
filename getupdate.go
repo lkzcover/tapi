@@ -25,8 +25,12 @@ type Message struct {
 	UpdateID int64 `json:"update_id"`
 	Message  struct {
 		MessageID uint64 `json:"message_id"`
-		Text      string `json:"text"`
-		Chat      struct {
+		From      struct {
+			ID       int64  `json:"id"`
+			Username string `json:"username"`
+		} `json:"from"`
+		Text string `json:"text"`
+		Chat struct {
 			ID int64 `json:"id"`
 		} `json:"chat"`
 	} `json:"message"`
