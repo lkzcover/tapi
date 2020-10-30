@@ -2,6 +2,7 @@ package tapi
 
 const defaultTelegramAPIUrl = "https://api.telegram.org/"
 
+// TODO переименовать в v1.0.0
 type Engine struct {
 	telegramApiURL   string
 	telegramBotToken string
