@@ -7,10 +7,14 @@ import (
 	"net/http"
 )
 
-func (obj *Engine) SendMessage(chatID int64, msg string) error {
+func (obj *Engine) SendMessage(chatID int64, msg string, replyMarkup ...interface{}) error {
 	sMsg := replyMsgStruct{
 		ChatID: chatID,
 		Text:   msg,
+	}
+
+	if len(replyMarkup) != 0 {
+		sMsg.ReplyMarkup = replyMarkup[0]
 	}
 
 	body, err := json.Marshal(sMsg)
