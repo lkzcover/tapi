@@ -13,26 +13,6 @@ func init() {
 	offset = -1
 }
 
-type MessageList struct {
-	OK     bool      `json:"ok"`
-	Result []Message `json:"result"`
-}
-
-type Message struct {
-	UpdateID int64 `json:"update_id"`
-	Message  struct {
-		MessageID uint64 `json:"message_id"`
-		From      struct {
-			ID       int64  `json:"id"`
-			Username string `json:"username"`
-		} `json:"from"`
-		Text string `json:"text"`
-		Chat struct {
-			ID int64 `json:"id"`
-		} `json:"chat"`
-	} `json:"message"`
-}
-
 func (obj *Engine) GetUpdates() ([]Message, error) {
 
 	var messageList MessageList

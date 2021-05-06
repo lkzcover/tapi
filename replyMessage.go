@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 )
 
@@ -24,8 +23,6 @@ func (obj *Engine) Reply(baseMsg *Message, replyMsg string, replyMarkup ...inter
 	if err != nil {
 		return fmt.Errorf("marshal sMsg error: %s", err)
 	}
-
-	log.Println(string(body))
 
 	// TODO допилить handlers
 	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+"/sendMessage", "application/json", bytes.NewBuffer(body))

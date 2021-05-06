@@ -1,5 +1,37 @@
 package tapi
 
+type MessageList struct {
+	OK     bool      `json:"ok"`
+	Result []Message `json:"result"`
+}
+
+type Message struct {
+	UpdateID int64 `json:"update_id"`
+
+	Message MessageStruct `json:"message"`
+
+	CallbackQuery *struct {
+		From struct {
+			ID       int64  `json:"id"`
+			Username string `json:"username"`
+		} `json:"from"`
+		Message MessageStruct `json:"message"`
+		Data    *string       `json:"data,omitempty"`
+	} `json:"callback_query,omitempty"`
+}
+
+type MessageStruct struct {
+	MessageID uint64 `json:"message_id"`
+	From      struct {
+		ID       int64  `json:"id"`
+		Username string `json:"username"`
+	} `json:"from"`
+	Text string `json:"text"`
+	Chat struct {
+		ID int64 `json:"id"`
+	} `json:"chat"`
+}
+
 type replyMsgStruct struct {
 	ChatID           int64       `json:"chat_id"`
 	Text             string      `json:"text"`
@@ -18,4 +50,21 @@ type ReplyKeyboardMarkup struct {
 //KeyboardButton https://core.telegram.org/bots/api#keyboardbutton
 type KeyboardButton struct {
 	Text string `json:"text"`
+}
+
+//InlineKeyboardMarkup InlineKeyboardMarkup
+type InlineKeyboardMarkup struct {
+	InlineKeyboard [][]InlineKeyboardButton `json:"inline_keyboard"`
+}
+
+//InlineKeyboardButton https://core.telegram.org/bots/api#inlinekeyboardbutton
+type InlineKeyboardButton struct {
+	Text string `json:"text"`
+	// Url  *string `json:"url,omitempty"` // Optional. HTTP or tg:// url to be opened when button is pressed
+	// login_url
+	CallbackData *string `json:"callback_data,omitempty"`
+	// switch_inline_query
+	// switch_inline_query_current_chat
+	// callback_game
+	// pay
 }
