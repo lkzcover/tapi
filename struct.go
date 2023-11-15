@@ -34,12 +34,13 @@ type MessageStruct struct {
 
 type replyMsgStruct struct {
 	ChatID           int64       `json:"chat_id"`
+	MessageID        *uint64     `json:"message_id"`
 	Text             string      `json:"text"`
 	ReplyToMessageID *uint64     `json:"reply_to_message_id,omitempty"`
 	ReplyMarkup      interface{} `json:"reply_markup,omitempty"`
 }
 
-//ReplyKeyboardMarkup https://core.telegram.org/bots/api#replykeyboardmarkup
+// ReplyKeyboardMarkup https://core.telegram.org/bots/api#replykeyboardmarkup
 type ReplyKeyboardMarkup struct {
 	Keyboard        [][]KeyboardButton `json:"keyboard"`
 	ResizeKeyboard  bool               `json:"resize_keyboard"`
@@ -47,17 +48,17 @@ type ReplyKeyboardMarkup struct {
 	Selective       bool               `json:"selective"`
 }
 
-//KeyboardButton https://core.telegram.org/bots/api#keyboardbutton
+// KeyboardButton https://core.telegram.org/bots/api#keyboardbutton
 type KeyboardButton struct {
 	Text string `json:"text"`
 }
 
-//InlineKeyboardMarkup InlineKeyboardMarkup
+// InlineKeyboardMarkup InlineKeyboardMarkup
 type InlineKeyboardMarkup struct {
 	InlineKeyboard [][]InlineKeyboardButton `json:"inline_keyboard"`
 }
 
-//InlineKeyboardButton https://core.telegram.org/bots/api#inlinekeyboardbutton
+// InlineKeyboardButton https://core.telegram.org/bots/api#inlinekeyboardbutton
 type InlineKeyboardButton struct {
 	Text string `json:"text"`
 	// Url  *string `json:"url,omitempty"` // Optional. HTTP or tg:// url to be opened when button is pressed

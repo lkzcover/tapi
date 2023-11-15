@@ -7,10 +7,12 @@ import (
 	"net/http"
 )
 
-func (obj *Engine) SendMessage(chatID int64, msg string, replyMarkup ...interface{}) error {
+// EditMessageText method for edit bot message https://core.telegram.org/bots/api#editmessagetext
+func (obj *Engine) EditMessageText(chatID int64, msgID uint64, msg string, replyMarkup ...interface{}) error {
 	sMsg := replyMsgStruct{
-		ChatID: chatID,
-		Text:   msg,
+		ChatID:    chatID,
+		MessageID: &msgID,
+		Text:      msg,
 	}
 
 	if len(replyMarkup) != 0 {
@@ -22,7 +24,7 @@ func (obj *Engine) SendMessage(chatID int64, msg string, replyMarkup ...interfac
 		return fmt.Errorf("marshal sMsg error: %s", err)
 	}
 
-	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+"/sendMessage", "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+"/editMessageText", "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		return fmt.Errorf("send message to user error: %s", err)
 	}
@@ -30,11 +32,6 @@ func (obj *Engine) SendMessage(chatID int64, msg string, replyMarkup ...interfac
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("return resp status code: %d", resp.StatusCode)
 	}
-
-	//body, err = io.ReadAll(resp.Body)
-	//if err != nil {
-	//	return err
-	//}
 
 	return nil
 }
