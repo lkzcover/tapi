@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -14,7 +14,7 @@ func GetRequest(urlReq string, respData interface{}) error {
 		return err
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}

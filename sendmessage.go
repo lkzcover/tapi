@@ -4,10 +4,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 )
 
-func (obj *Engine) SendMessage(chatID int64, msg string, replyMarkup ...interface{}) error {
+// SendMessage - send message to chatID https://core.telegram.org/bots/api#sendmessage
+func (obj *Engine) SendMessage(chatID int64, msg string, replyMarkup ...interface{}) (*Message, error) {
 	sMsg := replyMsgStruct{
 		ChatID: chatID,
 		Text:   msg,
@@ -19,22 +21,29 @@ func (obj *Engine) SendMessage(chatID int64, msg string, replyMarkup ...interfac
 
 	body, err := json.Marshal(sMsg)
 	if err != nil {
-		return fmt.Errorf("marshal sMsg error: %s", err)
+		return nil, fmt.Errorf("marshal sMsg error: %w", err)
 	}
 
 	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+"/sendMessage", "application/json", bytes.NewBuffer(body))
 	if err != nil {
-		return fmt.Errorf("send message to user error: %s", err)
+		return nil, fmt.Errorf("send message to user error: %w", err)
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("return resp status code: %d", resp.StatusCode)
+		return nil, fmt.Errorf("return resp status code: %d", resp.StatusCode)
 	}
 
-	//body, err = io.ReadAll(resp.Body)
-	//if err != nil {
-	//	return err
-	//}
+	body, err = io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
 
-	return nil
+	var rplyMsg Message
+
+	err = json.Unmarshal(body, &rplyMsg)
+	if err != nil {
+		return nil, err
+	}
+
+	return &rplyMsg, nil
 }
