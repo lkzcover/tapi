@@ -1,4 +1,4 @@
-module github.com/lkzcover/tapi
+module github.com/lkzcover/tapi/v1
 
 go 1.14
 
