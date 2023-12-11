@@ -9,7 +9,7 @@ import (
 )
 
 // SendMessage - send message to chatID https://core.telegram.org/bots/api#sendmessage
-func (obj *Engine) SendMessage(chatID int64, msg string, replyMarkup ...interface{}) (*Message, error) {
+func (obj *Engine) SendMessage(chatID int64, msg string, replyMarkup ...interface{}) (*ResultMsg, error) {
 	sMsg := replyMsgStruct{
 		ChatID: chatID,
 		Text:   msg,
@@ -38,12 +38,12 @@ func (obj *Engine) SendMessage(chatID int64, msg string, replyMarkup ...interfac
 		return nil, err
 	}
 
-	var rplyMsg Message
+	var resultMsg ResultMsg
 
-	err = json.Unmarshal(body, &rplyMsg)
+	err = json.Unmarshal(body, &resultMsg)
 	if err != nil {
 		return nil, err
 	}
 
-	return &rplyMsg, nil
+	return &resultMsg, nil
 }

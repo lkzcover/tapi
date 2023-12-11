@@ -1,5 +1,5 @@
 module github.com/lkzcover/tapi/v1
 
-go 1.14
+go 1.21.5
 
-require github.com/robfig/cron v1.2.0
+require github.com/lkzcover/tapi v1.0.0

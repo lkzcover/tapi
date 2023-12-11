@@ -13,6 +13,7 @@ func init() {
 	offset = -1
 }
 
+// GetUpdates - get updates from telegram https://core.telegram.org/bots/api#getupdates
 func (obj *Engine) GetUpdates() ([]Message, error) {
 
 	var messageList MessageList
