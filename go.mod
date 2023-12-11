@@ -1,5 +1,3 @@
-module github.com/lkzcover/tapi/v1
+module github.com/lkzcover/tapi
 
-go 1.21.5
-
-require github.com/lkzcover/tapi v1.0.0
+go 1.21
