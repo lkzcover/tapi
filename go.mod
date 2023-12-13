@@ -1,3 +1,3 @@
-module github.com/lkzcover/tapi/v1
+module github.com/lkzcover/tapi
 
 go 1.20
