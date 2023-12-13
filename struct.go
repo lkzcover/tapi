@@ -61,6 +61,7 @@ type replyMsgStruct struct {
 	Text             string      `json:"text"`
 	ReplyToMessageID *uint64     `json:"reply_to_message_id,omitempty"`
 	ReplyMarkup      interface{} `json:"reply_markup,omitempty"`
+	ParseMode        *Formatting `json:"parse_mode,omitempty"`
 }
 
 // ReplyKeyboardMarkup https://core.telegram.org/bots/api#replykeyboardmarkup

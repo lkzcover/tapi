@@ -9,12 +9,16 @@ import (
 )
 
 // Reply simple method for reply message. Used sendMessage method of Telegram api https://core.telegram.org/bots/api#sendmessage
-func (obj *Engine) Reply(baseMsg *Message, replyMsg string, replyMarkup ...interface{}) (*ResultMsg, error) {
+func (obj *Engine) Reply(baseMsg *Message, msg MsgBody, replyMarkup ...interface{}) (*ResultMsg, error) {
 
 	sMsg := replyMsgStruct{
 		ChatID:           baseMsg.Message.Chat.ID,
-		Text:             replyMsg,
+		Text:             msg.Text,
 		ReplyToMessageID: &baseMsg.Message.MessageID,
+	}
+
+	if len(msg.Format) != 0 {
+		sMsg.ParseMode = &msg.Format
 	}
 
 	if len(replyMarkup) != 0 {
@@ -32,13 +36,13 @@ func (obj *Engine) Reply(baseMsg *Message, replyMsg string, replyMarkup ...inter
 		return nil, fmt.Errorf("send message to user error: %s", err)
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("return resp status code: %d", resp.StatusCode)
-	}
-
 	body, err = io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, parseError(body)
 	}
 
 	var resultMsg ResultMsg

@@ -9,10 +9,14 @@ import (
 )
 
 // SendMessage - send message to chatID https://core.telegram.org/bots/api#sendmessage
-func (obj *Engine) SendMessage(chatID int64, msg string, replyMarkup ...interface{}) (*ResultMsg, error) {
+func (obj *Engine) SendMessage(chatID int64, msg MsgBody, replyMarkup ...interface{}) (*ResultMsg, error) {
 	sMsg := replyMsgStruct{
 		ChatID: chatID,
-		Text:   msg,
+		Text:   msg.Text,
+	}
+
+	if len(msg.Format) != 0 {
+		sMsg.ParseMode = &msg.Format
 	}
 
 	if len(replyMarkup) != 0 {
@@ -29,13 +33,13 @@ func (obj *Engine) SendMessage(chatID int64, msg string, replyMarkup ...interfac
 		return nil, fmt.Errorf("send message to user error: %w", err)
 	}
 
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("return resp status code: %d", resp.StatusCode)
-	}
-
 	body, err = io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, parseError(body)
 	}
 
 	var resultMsg ResultMsg

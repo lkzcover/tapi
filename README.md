@@ -32,9 +32,3 @@ For get new messages
 ```Golang
 getMsgs, err := tgConn.GetUpdates()
 ```
-
-For send message
-
-```Golang
-tgMsg, err := tgConn.SendMessage(<chat ID>, "<message>")
-```
