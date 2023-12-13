@@ -25,5 +25,5 @@ func parseError(body []byte) error {
 		return errors.Join(InternalLibError, err)
 	}
 
-	return errors.Join(fmt.Errorf("%d", tgError.ErrorCode), errors.New(tgError.Description))
+	return fmt.Errorf("%d %w", tgError.ErrorCode, errors.New(tgError.Description))
 }
