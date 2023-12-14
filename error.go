@@ -22,7 +22,7 @@ func parseError(body []byte) error {
 
 	err := json.Unmarshal(body, &tgError)
 	if err != nil {
-		return errors.Join(InternalLibError, err)
+		return fmt.Errorf("%s %w", InternalLibError, err)
 	}
 
 	return fmt.Errorf("%d %w", tgError.ErrorCode, errors.New(tgError.Description))
