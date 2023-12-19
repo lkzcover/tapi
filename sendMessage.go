@@ -41,7 +41,7 @@ func (obj *Engine) SendMessage(chatID int64, msg MsgParams, replyMarkup ...inter
 
 	if resp.StatusCode != http.StatusOK {
 		errBodyResp, err := parseError(body)
-		if errors.Is(err, MigrateChatID) {
+		if errors.Is(err, MigrateChatID) && msg.MigrateToChatID {
 			modMsg := msg
 			modMsg.MigrateToChatID = false // исключаем зацикливание
 
