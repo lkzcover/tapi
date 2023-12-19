@@ -3,13 +3,14 @@ package tapi
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 )
 
 // SendMessage - send message to chatID https://core.telegram.org/bots/api#sendmessage
-func (obj *Engine) SendMessage(chatID int64, msg MsgBody, replyMarkup ...interface{}) (*ResultMsg, error) {
+func (obj *Engine) SendMessage(chatID int64, msg MsgParams, replyMarkup ...interface{}) (*ResultMsg, error) {
 	sMsg := replyMsgStruct{
 		ChatID: chatID,
 		Text:   msg.Text,
@@ -39,7 +40,15 @@ func (obj *Engine) SendMessage(chatID int64, msg MsgBody, replyMarkup ...interfa
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, parseError(body)
+		errBodyResp, err := parseError(body)
+		if errors.Is(err, MigrateChatID) {
+			modMsg := msg
+			modMsg.MigrateToChatID = false // исключаем зацикливание
+
+			return obj.SendMessage(errBodyResp.Parameters.MigrateToChatID, modMsg, replyMarkup...)
+		}
+
+		return nil, err
 	}
 
 	var resultMsg ResultMsg

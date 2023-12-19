@@ -9,7 +9,7 @@ import (
 )
 
 // Reply simple method for reply message. Used sendMessage method of Telegram api https://core.telegram.org/bots/api#sendmessage
-func (obj *Engine) Reply(baseMsg *Message, msg MsgBody, replyMarkup ...interface{}) (*ResultMsg, error) {
+func (obj *Engine) Reply(baseMsg *Message, msg MsgParams, replyMarkup ...interface{}) (*ResultMsg, error) {
 
 	sMsg := replyMsgStruct{
 		ChatID:           baseMsg.Message.Chat.ID,
@@ -42,7 +42,8 @@ func (obj *Engine) Reply(baseMsg *Message, msg MsgBody, replyMarkup ...interface
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, parseError(body)
+		_, err := parseError(body)
+		return nil, err
 	}
 
 	var resultMsg ResultMsg

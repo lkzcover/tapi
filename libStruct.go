@@ -7,8 +7,9 @@ const (
 // Formatting defining text style
 type Formatting string
 
-// MsgBody struct for configuration message style
-type MsgBody struct {
-	Text   string     // message text
-	Format Formatting // format message
+// MsgParams struct for message parameters
+type MsgParams struct {
+	Text            string     // message text
+	Format          Formatting // format message
+	MigrateToChatID bool       // set true for automatic redirection message to new chat id
 }

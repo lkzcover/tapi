@@ -9,7 +9,7 @@ import (
 )
 
 // EditMessageText method for edit bot message https://core.telegram.org/bots/api#editmessagetext
-func (obj *Engine) EditMessageText(chatID int64, msgID uint64, msg MsgBody, replyMarkup ...interface{}) (*ResultMsg, error) {
+func (obj *Engine) EditMessageText(chatID int64, msgID uint64, msg MsgParams, replyMarkup ...interface{}) (*ResultMsg, error) {
 	sMsg := replyMsgStruct{
 		ChatID:    chatID,
 		MessageID: &msgID,
@@ -40,7 +40,8 @@ func (obj *Engine) EditMessageText(chatID int64, msgID uint64, msg MsgBody, repl
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return nil, parseError(body)
+		_, err := parseError(body)
+		return nil, err
 	}
 
 	var resultMsg ResultMsg
