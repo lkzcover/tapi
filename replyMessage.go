@@ -31,7 +31,7 @@ func (obj *Engine) Reply(baseMsg *Message, msg MsgParams, replyMarkup ...interfa
 	}
 
 	// TODO допилить handlers
-	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+"/sendMessage", "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+obj.telegramEnvironment+"/sendMessage", "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		return nil, fmt.Errorf("send message to user error: %s", err)
 	}

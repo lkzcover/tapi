@@ -18,7 +18,7 @@ func (obj *Engine) GetUpdates() ([]Message, error) {
 
 	var messageList MessageList
 
-	err := handlers.GetRequest(obj.telegramApiURL+obj.telegramBotToken+"/getUpdates?offset="+strconv.FormatInt(offset, 10), &messageList)
+	err := handlers.GetRequest(obj.telegramApiURL+obj.telegramBotToken+obj.telegramEnvironment+"/getUpdates?offset="+strconv.FormatInt(offset, 10), &messageList)
 	if err != nil {
 		return nil, err
 	}

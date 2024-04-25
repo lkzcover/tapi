@@ -29,7 +29,7 @@ func (obj *Engine) SendMessage(chatID int64, msg MsgParams, replyMarkup ...inter
 		return nil, fmt.Errorf("marshal sMsg error: %w", err)
 	}
 
-	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+"/sendMessage", "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+obj.telegramEnvironment+"/sendMessage", "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		return nil, fmt.Errorf("send message to user error: %w", err)
 	}
