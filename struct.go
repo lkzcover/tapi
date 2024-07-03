@@ -1,5 +1,10 @@
 package tapi
 
+import (
+	"github.com/lkzcover/tapi/queries"
+	"github.com/lkzcover/tapi/types"
+)
+
 type MessageList struct {
 	OK     bool      `json:"ok"`
 	Result []Message `json:"result"`
@@ -41,6 +46,8 @@ type Message struct {
 		Message MessageStruct `json:"message"`
 		Data    *string       `json:"data,omitempty"`
 	} `json:"callback_query,omitempty"`
+
+	InlineQuery *queries.InlineQuery `json:"inline_query,omitempty"`
 }
 
 type MessageStruct struct {
@@ -61,6 +68,7 @@ type replyMsgStruct struct {
 	Text             string      `json:"text"`
 	ReplyToMessageID *uint64     `json:"reply_to_message_id,omitempty"`
 	ReplyMarkup      interface{} `json:"reply_markup,omitempty"`
+	ParseMode        *Formatting `json:"parse_mode,omitempty"`
 }
 
 // ReplyKeyboardMarkup https://core.telegram.org/bots/api#replykeyboardmarkup
@@ -71,9 +79,10 @@ type ReplyKeyboardMarkup struct {
 	Selective       bool               `json:"selective"`
 }
 
-// KeyboardButton https://core.telegram.org/bots/api#keyboardbutton
+// KeyboardButton - implement https://core.telegram.org/bots/api#keyboardbutton
 type KeyboardButton struct {
-	Text string `json:"text"`
+	Text   string            `json:"text"`
+	WebApp *types.WebAppInfo `json:"web_app,omitempty"`
 }
 
 // InlineKeyboardMarkup InlineKeyboardMarkup
@@ -86,7 +95,8 @@ type InlineKeyboardButton struct {
 	Text string `json:"text"`
 	// Url  *string `json:"url,omitempty"` // Optional. HTTP or tg:// url to be opened when button is pressed
 	// login_url
-	CallbackData *string `json:"callback_data,omitempty"`
+	CallbackData *string           `json:"callback_data,omitempty"`
+	WebApp       *types.WebAppInfo `json:"web_app,omitempty"`
 	// switch_inline_query
 	// switch_inline_query_current_chat
 	// callback_game

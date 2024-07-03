@@ -17,11 +17,12 @@ type GetMeStruct struct {
 	} `json:"result"`
 }
 
+// GetMe - https://core.telegram.org/bots/api#getme
 func (obj *Engine) GetMe() (*GetMeStruct, error) {
 
 	var getMe GetMeStruct
 
-	err := handlers.GetRequest(obj.telegramApiURL+obj.telegramBotToken+"/getMe", &getMe)
+	err := handlers.GetRequest(obj.telegramApiURL+obj.telegramBotToken+obj.telegramEnvironment+"/getMe", &getMe)
 
 	return &getMe, err
 }

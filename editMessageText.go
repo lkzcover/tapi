@@ -4,15 +4,20 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 )
 
 // EditMessageText method for edit bot message https://core.telegram.org/bots/api#editmessagetext
-func (obj *Engine) EditMessageText(chatID int64, msgID uint64, msg string, replyMarkup ...interface{}) error {
+func (obj *Engine) EditMessageText(chatID int64, msgID uint64, msg MsgParams, replyMarkup ...interface{}) (*ResultMsg, error) {
 	sMsg := replyMsgStruct{
 		ChatID:    chatID,
 		MessageID: &msgID,
-		Text:      msg,
+		Text:      msg.Text,
+	}
+
+	if len(msg.Format) != 0 {
+		sMsg.ParseMode = &msg.Format
 	}
 
 	if len(replyMarkup) != 0 {
@@ -21,17 +26,30 @@ func (obj *Engine) EditMessageText(chatID int64, msgID uint64, msg string, reply
 
 	body, err := json.Marshal(sMsg)
 	if err != nil {
-		return fmt.Errorf("marshal sMsg error: %s", err)
+		return nil, fmt.Errorf("marshal sMsg error: %s", err)
 	}
 
 	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+"/editMessageText", "application/json", bytes.NewBuffer(body))
 	if err != nil {
-		return fmt.Errorf("send message to user error: %s", err)
+		return nil, fmt.Errorf("send message to user error: %s", err)
+	}
+
+	body, err = io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("return resp status code: %d", resp.StatusCode)
+		_, err := parseError(body)
+		return nil, err
 	}
 
-	return nil
+	var resultMsg ResultMsg
+
+	err = json.Unmarshal(body, &resultMsg)
+	if err != nil {
+		return nil, err
+	}
+
+	return &resultMsg, nil
 }

@@ -3,18 +3,17 @@ package tapi
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
 )
 
-// Reply simple method for reply message. Used sendMessage method of Telegram api https://core.telegram.org/bots/api#sendmessage
-func (obj *Engine) Reply(baseMsg *Message, msg MsgParams, replyMarkup ...interface{}) (*ResultMsg, error) {
-
+// SendMessage - send message to chatID https://core.telegram.org/bots/api#sendmessage
+func (obj *Engine) SendMessage(chatID int64, msg MsgParams, replyMarkup ...interface{}) (*ResultMsg, error) {
 	sMsg := replyMsgStruct{
-		ChatID:           baseMsg.Message.Chat.ID,
-		Text:             msg.Text,
-		ReplyToMessageID: &baseMsg.Message.MessageID,
+		ChatID: chatID,
+		Text:   msg.Text,
 	}
 
 	if len(msg.Format) != 0 {
@@ -27,13 +26,12 @@ func (obj *Engine) Reply(baseMsg *Message, msg MsgParams, replyMarkup ...interfa
 
 	body, err := json.Marshal(sMsg)
 	if err != nil {
-		return nil, fmt.Errorf("marshal sMsg error: %s", err)
+		return nil, fmt.Errorf("marshal sMsg error: %w", err)
 	}
 
-	// TODO допилить handlers
 	resp, err := http.Post(obj.telegramApiURL+obj.telegramBotToken+obj.telegramEnvironment+"/sendMessage", "application/json", bytes.NewBuffer(body))
 	if err != nil {
-		return nil, fmt.Errorf("send message to user error: %s", err)
+		return nil, fmt.Errorf("send message to user error: %w", err)
 	}
 
 	body, err = io.ReadAll(resp.Body)
@@ -42,7 +40,14 @@ func (obj *Engine) Reply(baseMsg *Message, msg MsgParams, replyMarkup ...interfa
 	}
 
 	if resp.StatusCode != http.StatusOK {
-		_, err := parseError(body)
+		errBodyResp, err := parseError(body)
+		if errors.Is(err, MigrateChatID) && msg.MigrateToChatID {
+			modMsg := msg
+			modMsg.MigrateToChatID = false // исключаем зацикливание
+
+			return obj.SendMessage(errBodyResp.Parameters.MigrateToChatID, modMsg, replyMarkup...)
+		}
+
 		return nil, err
 	}
 
